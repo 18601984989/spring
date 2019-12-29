@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+        <bean id="stu" class="entity.Student">
+                <property name="sid" value="1"/>
+                <property name="sname">
+                        <!--在xml中英文问号“?”是可以被正常解析的，但是以下这几种符号是不能正常解析的：分别是“&”、“<”、“>”、“’”、“””。
+                        “<” 会产生错误，因为解析器会把该字符解释为新元素的开始。
+                        “&” 也会产生错误，因为解析器会把该字符解释为字符实体的开始。
+                        使用<![CDATA[ sql 语句 ]]>
+                        某些文本，比如 JavaScript 代码，包含大量 “<” 或 “&” 字符。为了避免错误，可以将脚本代码定义为 CDATA。
+                        CDATA 部分中的所有内容都会被解析器忽略。CDATA 部分由 "<![CDATA[" 开始，由 "]]>" 结束。
+                        在mapper文件中写sql语句时，遇到特殊字符时，如：< 等，建议使用
+                        <![CDATA[ sql 语句 ]]>标记，将sql语句包裹住，不被解析器解析
+                        -->
+                        <value><![CDATA[<张三>]]></value>
+                </property>
+                <!--将cl对象的值赋值给stu-->
+                <!--通过 ref 属性将其他 bean 赋给当前 bean 对象，这种方式叫做依赖注入（DI），
+                是 IoC 的具体实现方式，通常 DI 和 IoC 是紧密结合在一起的，因此一般说的 IoC 包括 DI-->
+                <!--<property name="classes" ref="cl"></property>-->
+        </bean>
+        <bean id="stu02" class="entity.Student">
+                <property name="sid" value="1"/>
+                <property name="sname">
+                        <!--在xml中英文问号“?”是可以被正常解析的，但是以下这几种符号是不能正常解析的：分别是“&”、“<”、“>”、“’”、“””。
+                        “<” 会产生错误，因为解析器会把该字符解释为新元素的开始。
+                        “&” 也会产生错误，因为解析器会把该字符解释为字符实体的开始。
+                        使用<![CDATA[ sql 语句 ]]>
+                        某些文本，比如 JavaScript 代码，包含大量 “<” 或 “&” 字符。为了避免错误，可以将脚本代码定义为 CDATA。
+                        CDATA 部分中的所有内容都会被解析器忽略。CDATA 部分由 "<![CDATA[" 开始，由 "]]>" 结束。
+                        在mapper文件中写sql语句时，遇到特殊字符时，如：< 等，建议使用
+                        <![CDATA[ sql 语句 ]]>标记，将sql语句包裹住，不被解析器解析
+                        -->
+                        <value><![CDATA[<张三>]]></value>
+                </property>
+                <!--将cl对象的值赋值给stu-->
+                <!--通过 ref 属性将其他 bean 赋给当前 bean 对象，这种方式叫做依赖注入（DI），
+                是 IoC 的具体实现方式，通常 DI 和 IoC 是紧密结合在一起的，因此一般说的 IoC 包括 DI-->
+                <!--<property name="classes" ref="cl"></property>-->
+        </bean>
+
+        <bean id="stuC" class="entity.StudentHaseConstructor">
+                <constructor-arg index="0" value="1"/>
+                <constructor-arg index="1" value="zh"/>
+        </bean>
+        <bean id="cl" class="entity.Classes">
+                <property name="id" value="1"/>
+                <property name="name" value="lalala"/>
+                <property name="studentList">
+                        <list>
+                                <ref bean="stu"/>
+                                <ref bean="stu02"/>
+                        </list>
+                </property>
+        </bean>
+        <!--导入外部资源文件-->
+        <context:property-placeholder location="classpath:jdbc.properties"/>
+        <!--创建 C3P0 数据源-->
+        <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+                <property name="user" value="${user}"/>
+                <property name="password" value="${pwd}"/>
+                <property name="driverClass" value="${driverName}"/>
+                <property name="jdbcUrl" value="${url}"/>
+        </bean>
+        <!--一个静态工厂类-->
+        <bean id = "car1" class="factory.StaticCarFactory" factory-method="getCar">
+                <constructor-arg value="1"/>
+        </bean>
+        <!--测试spring junit-->
+        <bean id="sayHello" class="service.impl.SayHelloImpl"/>
+
+</beans>
